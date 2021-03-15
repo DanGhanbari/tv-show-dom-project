@@ -24,15 +24,15 @@ function makePageForEpisodes(episodeList) {
       episodeList[i].season = `0${episodeList[i].season}`;
     }
     //adding value to elements
-    aTag.href = `${episodeList[i]._links.self.href}`;
-    aTag.innerText = `${episodeList[i].name} - S${episodeList[i].season}E${episodeList[i].number}`;
+    aTag.href = `${episodeList[i].url}`;
     aTag.target = "_blank";
+    h1Element.innerText = `${episodeList[i].name} - S${episodeList[i].season}E${episodeList[i].number}`;
     imageElement.src = `${episodeList[i].image.medium}`;
     pElement.innerHTML = `${episodeList[i].summary}`;
 
     //appending elements
-    h1Element.appendChild(aTag);
-    sectionElement.appendChild(h1Element);
+    aTag.appendChild(h1Element);
+    sectionElement.appendChild(aTag);
     sectionElement.appendChild(imageElement);
     sectionElement.appendChild(pElement);
     mainElement.appendChild(sectionElement);
