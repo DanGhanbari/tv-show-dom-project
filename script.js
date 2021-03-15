@@ -2,6 +2,7 @@ function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
   searchBox();
+  dropDown(allEpisodes);
 }
 
 function makePageForEpisodes(episodeList) {
@@ -64,6 +65,17 @@ function searchBox() {
     allEpisodes.innerText = episodes.length;
     searchedEpisode.innerText = `${numOfResult}`;
   });
+}
+
+// Drop-down option menu
+function dropDown(episodes) {
+  const selectElement = document.getElementById("episode-select");
+  for (let i = 0; i < episodes.length; i++) {
+    let optionElement = document.createElement("option");
+    optionElement.innerText = `S${episodes[i].season}E${episodes[i].number} - ${episodes[i].name}`;
+    optionElement.value = `${episodes[i].url}`;
+    selectElement.appendChild(optionElement);
+  }
 }
 
 window.onload = setup;

@@ -5,12 +5,27 @@
 /* search section on header */
 header {
   display: flex;
+  align-items: center;
 }
 h4 {
   margin: 1em;
 }
 input {
   margin: 1em;
+  height: 2.5em;
+  border: 2px solid black;
+}
+label {
+  font-size: 25px;
+  padding: 1em;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+select {
+  height: 3em;
+  border: 2px solid black;
 }
 
 /* main section */
