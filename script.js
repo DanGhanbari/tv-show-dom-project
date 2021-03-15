@@ -1,6 +1,7 @@
 function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
+  searchBox();
 }
 
 function makePageForEpisodes(episodeList) {
@@ -38,6 +39,31 @@ function makePageForEpisodes(episodeList) {
     mainElement.appendChild(sectionElement);
     rootElem.appendChild(mainElement);
   }
+}
+
+//search box
+function searchBox() {
+  const inputElement = document.querySelector("input");
+  inputElement.addEventListener("keyup", function (event) {
+    let inputLetter = event.target.value.toLowerCase();
+    let searchedEpisode = document.getElementById("search-result");
+    let allEpisodes = document.getElementById("total-episodes");
+    let episodes = document.getElementsByTagName("section");
+    let numOfResult = 0;
+    for (let i = 0; i < episodes.length; i++) {
+      const currentEpisode = episodes[i].textContent.toLowerCase();
+      if (currentEpisode.match(inputLetter)) {
+        // Display matching episodes
+        episodes[i].style.display = "block";
+        numOfResult += 1;
+      } else {
+        // Hide non-matching episodes
+        episodes[i].style.display = "none";
+      }
+    }
+    allEpisodes.innerText = episodes.length;
+    searchedEpisode.innerText = `${numOfResult}`;
+  });
 }
 
 window.onload = setup;
