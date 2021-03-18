@@ -1,3 +1,6 @@
+const rootElem = document.getElementById("root");
+const mainElement = document.createElement("main");
+
 function setup() {
   const allEpisodes = getAllEpisodes();
   makePageForEpisodes(allEpisodes);
@@ -6,9 +9,6 @@ function setup() {
 }
 
 function makePageForEpisodes(episodeList) {
-  const rootElem = document.getElementById("root");
-  const mainElement = document.createElement("main");
-
   for (let i = 0; i < episodeList.length; i++) {
     //making elements and adding class
     let sectionElement = document.createElement("section");
@@ -16,7 +16,6 @@ function makePageForEpisodes(episodeList) {
     let h1Element = document.createElement("h1");
     let imageElement = document.createElement("img");
     let pElement = document.createElement("p");
-    pElement.className = "description";
 
     // adding zero to numbers less than 10
     if (episodeList[i].number < 10) {
@@ -71,11 +70,25 @@ function searchBox() {
 function dropDown(episodes) {
   const selectElement = document.getElementById("episode-select");
   for (let i = 0; i < episodes.length; i++) {
-    let optionElement = document.createElement("option");
-    optionElement.innerText = `S${episodes[i].season}E${episodes[i].number} - ${episodes[i].name}`;
-    optionElement.value = `${episodes[i].url}`;
+    var optionElement = document.createElement("option");
+    optionElement.value = `<section>
+                            <a href = ${episodes[i].url}><h1>S${episodes[i].season}E${episodes[i].number} - ${episodes[i].name}</h1></a>
+                            <img src = ${episodes[i].image.medium}>
+                            <p>${episodes[i].summary}</p>
+                          </section>`;
+
+    optionElement.innerHTML = `S${episodes[i].season}E${episodes[i].number} - ${episodes[i].name}`;
     selectElement.appendChild(optionElement);
   }
+  selectElement.addEventListener("change", () => {
+    if (selectElement.selectedIndex === 0) {
+      mainElement.innerHTML = "";
+      window.onload();
+    } else {
+      mainElement.innerHTML = selectElement.value;
+      rootElem.appendChild(mainElement);
+    }
+  });
 }
 
 window.onload = setup;
