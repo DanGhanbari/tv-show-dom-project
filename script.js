@@ -2,10 +2,15 @@ const rootElem = document.getElementById("root");
 const mainElement = document.createElement("main");
 
 function setup() {
-  const allEpisodes = getAllEpisodes();
-  makePageForEpisodes(allEpisodes);
-  searchBox();
-  dropDown(allEpisodes);
+  fetch("https://api.tvmaze.com/shows/82/episodes")
+    .then((response) => response.json())
+    .then((data) => {
+      const allEpisodes = data;
+      makePageForEpisodes(allEpisodes);
+      searchBox();
+      dropDown(allEpisodes);
+    })
+    .catch((err) => console.log("Error"));
 }
 
 function makePageForEpisodes(episodeList) {
