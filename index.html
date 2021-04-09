@@ -11,16 +11,16 @@
 
   <body>
       <div id="root">
-        <header class="d-flex align-items-center flex-column">
+        <header class="d-flex flex-column align-items-center justifycontent-center">
           <label for="show-select">Choose show:</label>
-          <div class="col-4">
-            <select id="show-select" class="form-select form-select-lg mb-3" >
+          <div class="col-6 select-show">
+            <select id="show-select" class="form-select  form-select-lg mb-3" >
               <option value="select all">Select a show</option>
             </select>
-
           </div>
-          <label for="episode-select">Choose episode:</label>
-          <div class="col-4">
+          <button type="button" id= "reset" class="btn btn-secondary">ALL SHOWS</button>
+          <label id="episode-select-label" for="episode-select">Choose episode:</label>
+          <div class="col-6 select-episode">
             <select id="episode-select" class="form-select form-select-sm mb-3">
               <option value="select all">Select all episodes</option>
             </select>
