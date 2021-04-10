@@ -13,7 +13,7 @@ function setup() {
   reset();
   selectShow();
   displayShow();
-  searchBox();
+  searchBox("shows");
 }
 
 function addZero(x) {
@@ -34,12 +34,12 @@ function makePageForEpisodes(episodeList) {
     let pElement = document.createElement("p");
     let seasonNumber = addZero(episodeList[i].season);
     let episodeNumber = addZero(episodeList[i].number);
-    if (episodeList[i].image !== null) {
+    if (episodeList[i].image !== null && episodeList[i].summary !== null) {
       aTag.href = `${episodeList[i].url}`;
       aTag.target = "_blank";
       h1Element.innerText = `${episodeList[i].name} - S${seasonNumber}E${episodeNumber}`;
       imageElement.src = `${episodeList[i].image.medium}`;
-      pElement.innerHTML = `${episodeList[i].summary}`;
+      pElement.innerHTML = `${truncate(episodeList[i].summary)}`;
 
       //appending elements
       aTag.appendChild(h1Element);
@@ -53,7 +53,7 @@ function makePageForEpisodes(episodeList) {
 }
 
 //search box
-function searchBox() {
+function searchBox(kindOfShow) {
   inputElement.addEventListener("keyup", function (event) {
     let inputLetter = event.target.value.toLowerCase();
     let episodes = document.getElementsByClassName("showSection");
@@ -69,7 +69,7 @@ function searchBox() {
         episodes[i].style.display = "none";
       }
     }
-    allEpisodes.innerText = episodes.length;
+    allEpisodes.innerText = `${episodes.length} ${kindOfShow}`;
     searchedEpisode.innerText = `${numOfResult}`;
   });
 }
@@ -81,11 +81,13 @@ function dropDown(episodes) {
   selectEpisodeElement.appendChild(firstOption);
   for (let i = 0; i < episodes.length; i++) {
     let optionElement = document.createElement("option");
-    if (episodes[i].image !== null) {
+    if (episodes[i].image !== null && episodes[i].summary !== null) {
       optionElement.value = `<section>
-    <a href = ${episodes[i].url}><h3>S${episodes[i].season}E${episodes[i].number} - ${episodes[i].name}</h3></a>
+    <a href = ${episodes[i].url}><h3>S${episodes[i].season}E${
+        episodes[i].number
+      } - ${episodes[i].name}</h3></a>
     <img src = ${episodes[i].image.medium}>
-    <p>${episodes[i].summary}</p>
+    <p>${truncate(episodes[i].summary)}</p>
     </section>`;
 
       let seasonNumber = addZero(episodes[i].season);
@@ -109,25 +111,14 @@ function dropDown(episodes) {
 let selectShow = function () {
   mainElement.innerHTML = "";
   const showList = getAllShows();
+  showList.sort((a, b) => (a.name > b.name ? 1 : -1));
   var showArr = [];
   var idArr = [];
   for (let i = 0; i < showList.length; i++) {
     showArr.push(showList[i].name);
     idArr.push(showList[i].id);
   }
-
-  var zip = [];
-  for (var i = 0; i < showArr.length; i++) {
-    zip.push([showArr[i], idArr[i]]);
-  }
-
-  zip.sort();
-
-  for (var i = 0; i < zip.length; i++) {
-    showArr[i] = zip[i][0];
-    idArr[i] = zip[i][1];
-  }
-  for (let i = 0; i < showArr.length; i++) {
+  for (let i = 0; i < showList.length; i++) {
     let optionElement = document.createElement("option");
     optionElement.value = `${idArr[i]}`;
     optionElement.innerHTML = `${showArr[i]}`;
@@ -142,6 +133,7 @@ function selectedShow() {
   reset();
   if (selectShowElement.selectedIndex === 0) {
     mainElement.innerHTML = "";
+    searchBox("Shows");
     displayShow();
   } else {
     mainElement.innerHTML = "";
@@ -158,7 +150,7 @@ function selectedShow() {
         const allEpisodes = data;
         dropDown(allEpisodes);
         makePageForEpisodes(allEpisodes);
-        searchBox(allEpisodes);
+        searchBox("Episodes");
       })
       .catch((error) => console.log(error));
   }
@@ -170,17 +162,19 @@ function displayShow() {
   selectEpisodeElement.style.display = "none";
   selectEpisodesLabel.style.display = "none";
   for (let i = 0; i < showObj.length; i++) {
+    truncate;
+    showObj.sort((a, b) => (a.name > b.name ? 1 : -1));
     let showDiv = document.createElement("div");
     showDiv.className = "showSection";
     if (showObj[i].image !== null) {
-      showDiv.innerHTML = `<div class=" zzz show d-flex flex-column align-items-center mt-4">
+      showDiv.innerHTML = `<div class=" show d-flex flex-column align-items-center mt-4">
          <div class=" d-flex flex-column align-items-center justify-content-center">
             <h4 class="pb-2" role="button">${showObj[i].name}</h4>
             <img class="w-100 bd-highlight img-thumbnail" src =${showObj[i].image.medium}>
         </div>
         <div class="d-flex justify-content-between">
             <div class= "summary p-4">Summary: ${showObj[i].summary}</div>
-            <section class= " rating col-sm-4 d-flex flex-column justify-content-center text-secondary p-4">
+            <section class= " rating col-sm-4 flex-column justify-content-center text-secondary p-4">
               <div class="p-2 overflow-auto"> Genres: ${showObj[i].genres}</div>
               <div class="p-2 overflow-auto"> Rated: ${showObj[i].rating.average}</div>
               <div class="p-2 overflow-auto"> Status: ${showObj[i].status}</div>
@@ -188,7 +182,7 @@ function displayShow() {
             </section>
             </div>
       </div>
-      <hr class="">`;
+      <hr>`;
       mainElement.appendChild(showDiv);
       rootElem.appendChild(mainElement);
 
@@ -207,7 +201,7 @@ function displayShow() {
             reset();
             dropDown(allEpisodes);
             makePageForEpisodes(allEpisodes);
-            searchBox();
+            searchBox("Episodes");
           })
           .catch((err) => console.log(err));
       });
@@ -229,6 +223,13 @@ function reset() {
   searchedEpisode.innerText = "0";
   allEpisodes.innerText = "0";
   inputElement.value = "";
+}
+
+function truncate(input) {
+  if (input.length > 5) {
+    return input.substring(0, 120) + "...";
+  }
+  return input;
 }
 
 window.onload = setup;
